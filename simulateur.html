@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options Payoff Simulator | Mohamed Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 100px auto 40px;
+            padding: 20px;
+            background-color: #f4f5f7;
+            color: #333;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f172a;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #374151;
+        }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; margin-top: 0; }
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; font-size: 0.9em; }
+        
+        .controls-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .strategy-group {
+            width: 100%;
+            margin-bottom: 10px;
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #0f172a;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 250px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            position: relative;
+            transition: opacity 0.3s;
+        }
+        .disabled-group {
+            opacity: 0.3;
+            pointer-events: none;
+            display: none !important;
+        }
+        label { font-weight: bold; margin-bottom: 2px; font-size: 0.95em; }
+        .action-text {
+            font-size: 0.85em;
+            color: #4b5563;
+            margin-bottom: 12px;
+            font-weight: 600;
+            min-height: 15px;
+        }
+        select {
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="range"], input[type="number"] {
+            padding: 8px;
+            width: 100%;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="range"] {
+            border: none;
+            padding: 0;
+            margin-top: 5px;
+        }
+        .value-display {
+            text-align: right;
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #0f172a;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        .premium-wrapper {
+            margin-top: auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .premium-label {
+            color: #2c3e50;
+            font-size: 0.85em;
+        }
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .explanation-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #0f172a;
+        }
+        .explanation-text {
+            font-size: 1.05em;
+            line-height: 1.5;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        .net-cost {
+            display: inline-block;
+            background: #2c3e50;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="scrolled">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Moqua<span class="logo-author">by Mohammed Drici</span></a>
+            <ul class="nav-links">
+                <li><a href="pricer.html">Download Pricer</a></li>
+                <li><a href="download.html">Python Package</a></li>
+                <li><a href="white_paper.html">White Paper</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <h2>Options Strategy Simulator</h2>
+    <div class="subtitle">Interactive Payoff Visualizer (Values shown are per-share)</div>
+
+    <div class="controls-container">
+        <div class="strategy-group">
+            <label for="strategy">Select Strategy:</label>
+            <select id="strategy">
+                <optgroup label="Single Leg">
+                    <option value="long_call">Long Call</option>
+                    <option value="short_call">Short (Naked) Call</option>
+                    <option value="long_put">Long Put</option>
+                    <option value="short_put">Short (Naked) Put</option>
+                </optgroup>
+                <optgroup label="Stock & Options">
+                    <option value="covered_call">Covered Call</option>
+                </optgroup>
+                <optgroup label="Vertical Spreads (2 Legs)">
+                    <option value="bull_call_spread">Bull Call Spread</option>
+                    <option value="bear_call_spread">Bear Call Spread</option>
+                    <option value="bull_put_spread">Bull Put Spread</option>
+                    <option value="bear_put_spread">Bear Put Spread</option>
+                </optgroup>
+                <optgroup label="Combinations (2 Legs)">
+                    <option value="straddle">Long Straddle</option>
+                    <option value="short_straddle">Short Straddle</option>
+                    <option value="strangle">Long Strangle</option>
+                    <option value="short_strangle">Short Strangle</option>
+                </optgroup>
+                <optgroup label="Ratio Combinations (2 Legs)">
+                    <option value="strip">Strip</option>
+                    <option value="strap">Strap</option>
+                </optgroup>
+                <optgroup label="Butterflies (3 Legs)">
+                    <option value="long_call_butterfly" selected>Long Call Butterfly</option>
+                    <option value="short_call_butterfly">Short Call Butterfly</option>
+                    <option value="long_put_butterfly">Long Put Butterfly</option>
+                    <option value="short_put_butterfly">Short Put Butterfly</option>
+                    <option value="bwb">Broken Wing Butterfly (Call)</option>
+                </optgroup>
+            </select>
+            <div id="strategyDesc" style="margin-top: 10px; font-size: 0.9em; color: #555;"></div>
+        </div>
+
+        <!-- LEG A -->
+        <div class="control-group" id="groupA">
+            <label for="strikeA" class="strike-label">Strike A</label>
+            <div class="action-text" id="actionA">Action</div>
+            <input type="range" id="strikeA" min="70" max="130" value="90" step="1">
+            <div class="value-display" id="valA">90 €</div>
+            
+            <div class="premium-wrapper" id="premiumWrapperA">
+                <label for="premiumA" class="premium-label">Premium A (€)</label>
+                <input type="number" id="premiumA" min="0" value="5.0" step="0.1">
+            </div>
+        </div>
+
+        <!-- LEG B -->
+        <div class="control-group" id="groupB">
+            <label for="strikeB" class="strike-label">Strike B</label>
+            <div class="action-text" id="actionB">Action</div>
+            <input type="range" id="strikeB" min="70" max="130" value="100" step="1">
+            <div class="value-display" id="valB">100 €</div>
+
+            <div class="premium-wrapper" id="premiumWrapperB">
+                <label for="premiumB" class="premium-label">Premium B (€)</label>
+                <input type="number" id="premiumB" min="0" value="2.0" step="0.1">
+            </div>
+        </div>
+
+        <!-- LEG C -->
+        <div class="control-group" id="groupC">
+            <label for="strikeC" class="strike-label">Strike C</label>
+            <div class="action-text" id="actionC">Action</div>
+            <input type="range" id="strikeC" min="70" max="130" value="110" step="1">
+            <div class="value-display" id="valC">110 €</div>
+
+            <div class="premium-wrapper" id="premiumWrapperC">
+                <label for="premiumC" class="premium-label">Premium C (€)</label>
+                <input type="number" id="premiumC" min="0" value="0.5" step="0.1">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Total Payoff Chart -->
+    <div class="chart-container">
+        <h3 style="text-align: center; margin-top: 0; color: #2c3e50;">Total Strategy Payoff</h3>
+        <canvas id="payoffChart"></canvas>
+    </div>
+
+    <!-- Explanation Box with Component Breakdown -->
+    <div class="explanation-container">
+        <h3 style="color: #2c3e50; margin-top: 0;">Strategy Breakdown</h3>
+        <div class="explanation-text" id="explanationText">
+            <!-- Explanation text will be injected here -->
+        </div>
+        <canvas id="componentsChart"></canvas>
+    </div>
+
+    <script>
+        const ctxTotal = document.getElementById('payoffChart').getContext('2d');
+        const ctxComponents = document.getElementById('componentsChart').getContext('2d');
+        let totalChartInstance;
+        let componentsChartInstance;
+
+        // --- DEFINITION OF ALL STRATEGIES ---
+        const STRATEGIES = {
+            'long_call': {
+                desc: 'Buying a Call option gives you the right to buy the underlying stock at the strike price. Used when you are bullish.',
+                legs: [ { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€)', actionText: 'Action: Buy 1 Call' } ]
+            },
+            'short_call': {
+                desc: 'Selling a Call option gives you the obligation to sell the stock at the strike price. Unlimited risk. Used when you are bearish/neutral.',
+                legs: [ { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€)', actionText: 'Action: Sell 1 Call' } ]
+            },
+            'long_put': {
+                desc: 'Buying a Put option gives you the right to sell the underlying stock at the strike price. Used when you are bearish.',
+                legs: [ { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Put Strike', premiumLabel: 'Put Premium (€)', actionText: 'Action: Buy 1 Put' } ]
+            },
+            'short_put': {
+                desc: 'Selling a Put option gives you the obligation to buy the stock at the strike price. Used when you are bullish/neutral.',
+                legs: [ { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Put Strike', premiumLabel: 'Put Premium (€)', actionText: 'Action: Sell 1 Put' } ]
+            },
+            'covered_call': {
+                desc: 'Owning the underlying stock and selling a Call option against it. Generates income but caps upside potential.',
+                legs: [ 
+                    { type: 'stock', action: 'buy', qty: 1, strikeLabel: 'Stock Purchase Price', premiumLabel: '', actionText: 'Action: Buy Stock' },
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€)', actionText: 'Action: Sell 1 Call' }
+                ]
+            },
+            'bull_call_spread': {
+                desc: 'Buying a lower strike Call and selling a higher strike Call. Defined risk and reward, used when moderately bullish.',
+                legs: [
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Lower Strike (Long)', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Call' },
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Higher Strike (Short)', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Call' }
+                ]
+            },
+            'bear_call_spread': {
+                desc: 'Selling a lower strike Call and buying a higher strike Call. Generates a credit, used when moderately bearish.',
+                legs: [
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Lower Strike (Short)', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Call' },
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Higher Strike (Long)', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Call' }
+                ]
+            },
+            'bull_put_spread': {
+                desc: 'Selling a higher strike Put and buying a lower strike Put. Generates a credit, used when moderately bullish.',
+                legs: [
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Lower Strike (Long)', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Put' },
+                    { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Higher Strike (Short)', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Put' }
+                ]
+            },
+            'bear_put_spread': {
+                desc: 'Buying a higher strike Put and selling a lower strike Put. Defined risk and reward, used when moderately bearish.',
+                legs: [
+                    { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Lower Strike (Short)', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Put' },
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Higher Strike (Long)', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Put' }
+                ]
+            },
+            'straddle': {
+                desc: 'Buying a Call and a Put at the exact same strike price. Profits from large moves in either direction (high volatility).',
+                legs: [
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€)', actionText: 'Action: Buy 1 Call' },
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Put Strike (Set same as Call)', premiumLabel: 'Put Premium (€)', actionText: 'Action: Buy 1 Put' }
+                ]
+            },
+            'short_straddle': {
+                desc: 'Selling a Call and a Put at the same strike. Profits if the stock stays flat (low volatility). Unlimited risk.',
+                legs: [
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€)', actionText: 'Action: Sell 1 Call' },
+                    { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Put Strike (Set same as Call)', premiumLabel: 'Put Premium (€)', actionText: 'Action: Sell 1 Put' }
+                ]
+            },
+            'strangle': {
+                desc: 'Buying an out-of-the-money Put and an out-of-the-money Call. Cheaper than a Straddle, needs a larger move to profit.',
+                legs: [
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Lower Strike (Put)', premiumLabel: 'Put Premium (€)', actionText: 'Action: Buy 1 Put' },
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Higher Strike (Call)', premiumLabel: 'Call Premium (€)', actionText: 'Action: Buy 1 Call' }
+                ]
+            },
+            'short_strangle': {
+                desc: 'Selling an OTM Put and an OTM Call. Profits if the stock stays between the strikes. Unlimited risk.',
+                legs: [
+                    { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Lower Strike (Put)', premiumLabel: 'Put Premium (€)', actionText: 'Action: Sell 1 Put' },
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Higher Strike (Call)', premiumLabel: 'Call Premium (€)', actionText: 'Action: Sell 1 Call' }
+                ]
+            },
+            'strip': {
+                desc: 'Buying 1 Call and 2 Puts at the same strike. Similar to a Straddle, but with a stronger bearish bias.',
+                legs: [
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€)', actionText: 'Action: Buy 1 Call' },
+                    { type: 'put', action: 'buy', qty: 2, strikeLabel: 'Put Strike (Set same as Call)', premiumLabel: 'Put Premium (€) per Option', actionText: 'Action: Buy 2 Puts' }
+                ]
+            },
+            'strap': {
+                desc: 'Buying 2 Calls and 1 Put at the same strike. Similar to a Straddle, but with a stronger bullish bias.',
+                legs: [
+                    { type: 'call', action: 'buy', qty: 2, strikeLabel: 'Call Strike', premiumLabel: 'Call Premium (€) per Option', actionText: 'Action: Buy 2 Calls' },
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Put Strike (Set same as Call)', premiumLabel: 'Put Premium (€)', actionText: 'Action: Buy 1 Put' }
+                ]
+            },
+            'long_call_butterfly': {
+                desc: 'Buying 1 lower Call, selling 2 middle Calls, buying 1 higher Call. Max profit if stock lands exactly on the middle strike.',
+                legs: [
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Lower Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Call' },
+                    { type: 'call', action: 'sell', qty: 2, strikeLabel: 'Body', premiumLabel: 'Premium (€) per Option', actionText: 'Action: Sell 2 Calls' },
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Upper Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Call' }
+                ]
+            },
+            'short_call_butterfly': {
+                desc: 'Selling 1 lower Call, buying 2 middle Calls, selling 1 higher Call. Profits from a large move in either direction.',
+                legs: [
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Lower Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Call' },
+                    { type: 'call', action: 'buy', qty: 2, strikeLabel: 'Body', premiumLabel: 'Premium (€) per Option', actionText: 'Action: Buy 2 Calls' },
+                    { type: 'call', action: 'sell', qty: 1, strikeLabel: 'Upper Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Call' }
+                ]
+            },
+            'long_put_butterfly': {
+                desc: 'Constructed entirely with Puts. Same payoff profile as a Long Call Butterfly.',
+                legs: [
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Lower Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Put' },
+                    { type: 'put', action: 'sell', qty: 2, strikeLabel: 'Body', premiumLabel: 'Premium (€) per Option', actionText: 'Action: Sell 2 Puts' },
+                    { type: 'put', action: 'buy', qty: 1, strikeLabel: 'Upper Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Put' }
+                ]
+            },
+            'short_put_butterfly': {
+                desc: 'Constructed entirely with Puts. Same payoff profile as a Short Call Butterfly.',
+                legs: [
+                    { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Lower Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Put' },
+                    { type: 'put', action: 'buy', qty: 2, strikeLabel: 'Body', premiumLabel: 'Premium (€) per Option', actionText: 'Action: Buy 2 Puts' },
+                    { type: 'put', action: 'sell', qty: 1, strikeLabel: 'Upper Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Sell 1 Put' }
+                ]
+            },
+            'bwb': {
+                desc: 'A Butterfly where one wing is further away from the body. Introduces directional bias and can be entered for a net credit.',
+                legs: [
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Lower Wing', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Call' },
+                    { type: 'call', action: 'sell', qty: 2, strikeLabel: 'Body', premiumLabel: 'Premium (€) per Option', actionText: 'Action: Sell 2 Calls' },
+                    { type: 'call', action: 'buy', qty: 1, strikeLabel: 'Upper Wing (Further Out)', premiumLabel: 'Premium (€)', actionText: 'Action: Buy 1 Call' }
+                ]
+            }
+        };
+
+        // Core Mathematical function for Leg PnL
+        function calcLegPnl(price, strike, premium, type, action, qty) {
+            let pnl = 0;
+            if (type === 'call') {
+                pnl = Math.max(0, price - strike) - premium;
+            } else if (type === 'put') {
+                pnl = Math.max(0, strike - price) - premium;
+            } else if (type === 'stock') {
+                pnl = price - strike; 
+            }
+            
+            if (action === 'sell') {
+                pnl = -pnl;
+            }
+            return pnl * qty;
+        }
+
+        function updateUIForStrategy() {
+            const strategyId = document.getElementById('strategy').value;
+            const config = STRATEGIES[strategyId];
+            
+            document.getElementById('strategyDesc').innerText = config.desc;
+
+            const groups = [
+                { grp: document.getElementById('groupA'), leg: config.legs[0] },
+                { grp: document.getElementById('groupB'), leg: config.legs[1] },
+                { grp: document.getElementById('groupC'), leg: config.legs[2] }
+            ];
+
+            groups.forEach(item => {
+                if (item.leg) {
+                    item.grp.classList.remove('disabled-group');
+                    item.grp.querySelector('.strike-label').innerText = item.leg.strikeLabel;
+                    item.grp.querySelector('.action-text').innerText = item.leg.actionText;
+                    
+                    if (item.leg.type === 'stock') {
+                        item.grp.querySelector('.premium-wrapper').style.display = 'none';
+                    } else {
+                        item.grp.querySelector('.premium-wrapper').style.display = 'block';
+                        item.grp.querySelector('.premium-label').innerText = item.leg.premiumLabel;
+                    }
+                } else {
+                    item.grp.classList.add('disabled-group');
+                }
+            });
+        }
+
+        function generateData() {
+            updateUIForStrategy();
+
+            const strategyId = document.getElementById('strategy').value;
+            const config = STRATEGIES[strategyId];
+
+            const A = parseFloat(document.getElementById('strikeA').value) || 0;
+            const B = parseFloat(document.getElementById('strikeB').value) || 0;
+            const C = parseFloat(document.getElementById('strikeC').value) || 0;
+
+            const premiumA = parseFloat(document.getElementById('premiumA').value) || 0;
+            const premiumB = parseFloat(document.getElementById('premiumB').value) || 0;
+            const premiumC = parseFloat(document.getElementById('premiumC').value) || 0;
+
+            document.getElementById('valA').innerText = A + " €";
+            document.getElementById('valB').innerText = B + " €";
+            document.getElementById('valC').innerText = C + " €";
+
+            const xAxis = []; 
+            const yAxisTotal = []; 
+            
+            const lowestStrike = Math.min(A, B, C);
+            const highestStrike = Math.max(A, B, C);
+            const startPrice = Math.max(0, lowestStrike - 30);
+            const endPrice = highestStrike + 30;
+
+            let componentsData = [];
+            const colors = ['#27ae60', '#e74c3c', '#8e44ad'];
+            let netCost = 0;
+            let explanationHtml = `<ul>`;
+
+            for(let i=0; i<config.legs.length; i++) {
+                const leg = config.legs[i];
+                const strike = i === 0 ? A : (i === 1 ? B : C);
+                const premium = i === 0 ? premiumA : (i === 1 ? premiumB : premiumC);
+                const compArray = [];
+                
+                for (let price = startPrice; price <= endPrice; price++) {
+                    if (i === 0) xAxis.push(price); 
+                    compArray.push(calcLegPnl(price, strike, premium, leg.type, leg.action, leg.qty));
+                }
+                
+                let legCost = 0;
+                if(leg.type !== 'stock') {
+                   legCost = (leg.action === 'buy' ? 1 : -1) * premium * leg.qty;
+                } else {
+                   legCost = (leg.action === 'buy' ? 1 : -1) * strike * leg.qty;
+                }
+                netCost += legCost;
+                
+                let typeText = leg.type === 'stock' ? 'Shares' : (leg.type === 'call' ? 'Call(s)' : 'Put(s)');
+                let actionText = leg.action === 'buy' ? 'Long' : 'Short';
+                let costCreditStr = legCost > 0 ? `Cost: €${Math.abs(legCost).toFixed(2)}` : `Credit: €${Math.abs(legCost).toFixed(2)}`;
+                if(legCost === 0 && leg.type !== 'stock') costCreditStr = "Free";
+
+                let labelDesc = `${actionText} ${leg.qty} ${typeText} @ ${strike} (${costCreditStr})`;
+                if (leg.type === 'stock') {
+                    labelDesc = `${actionText} Stock @ €${strike}`;
+                }
+                
+                componentsData.push({
+                    label: labelDesc,
+                    data: compArray,
+                    borderColor: colors[i],
+                    fill: false
+                });
+
+                explanationHtml += `<li><strong>${leg.strikeLabel}:</strong> ${actionText} ${leg.qty} ${typeText} at Strike ${strike}.</li>`;
+            }
+
+            explanationHtml += `</ul>`;
+            
+            for(let j=0; j<xAxis.length; j++) {
+                let total = 0;
+                for(let ds of componentsData) {
+                    total += ds.data[j];
+                }
+                yAxisTotal.push(total);
+            }
+
+            let costLabel = netCost > 0 ? 'Net Cost (Debit)' : 'Net Credit';
+            if (netCost === 0) costLabel = 'Net Cost';
+            explanationHtml += `<div class="net-cost">${costLabel}: €${Math.abs(netCost).toFixed(2)}</div>`;
+
+            document.getElementById('explanationText').innerHTML = explanationHtml;
+
+            return { xAxis, yAxisTotal, componentsData };
+        }
+
+        function getCommonScales() {
+            return {
+                x: {
+                    title: { display: true, text: 'Stock Price at Expiration (€)', font: {weight: 'bold'} }
+                },
+                y: {
+                    title: { display: true, text: 'Profit / Loss (€)', font: {weight: 'bold'} },
+                    grid: {
+                        color: (context) => {
+                            if (context.tick.value === 0) return 'rgba(231, 76, 60, 0.8)';
+                            return 'rgba(0, 0, 0, 0.05)';
+                        },
+                        lineWidth: (context) => context.tick.value === 0 ? 2 : 1
+                    }
+                }
+            };
+        }
+
+        function drawChart() {
+            const data = generateData();
+
+            if (totalChartInstance) {
+                totalChartInstance.destroy();
+            }
+            totalChartInstance = new Chart(ctxTotal, {
+                type: 'line',
+                data: {
+                    labels: data.xAxis,
+                    datasets: [{
+                        label: 'Total Strategy P&L (€)',
+                        data: data.yAxisTotal,
+                        borderColor: '#0f172a',
+                        backgroundColor: 'rgba(15, 23, 42, 0.1)',
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { intersect: false, mode: 'index' },
+                    scales: getCommonScales()
+                }
+            });
+
+            if (componentsChartInstance) {
+                componentsChartInstance.destroy();
+            }
+            data.componentsData.forEach(ds => {
+                ds.borderWidth = 2;
+                ds.pointRadius = 0;
+                ds.pointHoverRadius = 5;
+                ds.borderDash = [5, 5];
+            });
+
+            componentsChartInstance = new Chart(ctxComponents, {
+                type: 'line',
+                data: {
+                    labels: data.xAxis,
+                    datasets: data.componentsData
+                },
+                options: {
+                    responsive: true,
+                    interaction: { intersect: false, mode: 'index' },
+                    scales: getCommonScales(),
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('strategy').addEventListener('change', function(e) {
+            const strategy = e.target.value;
+            
+            if (['straddle', 'short_straddle', 'strip', 'strap'].includes(strategy)) {
+                document.getElementById('strikeA').value = 100;
+                document.getElementById('strikeB').value = 100;
+                document.getElementById('premiumA').value = 4.0;
+                document.getElementById('premiumB').value = 4.0;
+            } else if (['strangle', 'short_strangle'].includes(strategy)) {
+                document.getElementById('strikeA').value = 90;
+                document.getElementById('strikeB').value = 110;
+                document.getElementById('premiumA').value = 2.0;
+                document.getElementById('premiumB').value = 2.0;
+            } else if (['bull_call_spread', 'bear_put_spread'].includes(strategy)) {
+                document.getElementById('strikeA').value = 95;
+                document.getElementById('strikeB').value = 105;
+                document.getElementById('premiumA').value = 5.0;
+                document.getElementById('premiumB').value = 2.0;
+            } else if (['bear_call_spread', 'bull_put_spread'].includes(strategy)) {
+                document.getElementById('strikeA').value = 95;
+                document.getElementById('strikeB').value = 105;
+                document.getElementById('premiumA').value = 2.0;
+                document.getElementById('premiumB').value = 5.0;
+            } else if (strategy.includes('butterfly')) {
+                document.getElementById('strikeA').value = 90;
+                document.getElementById('strikeB').value = 100;
+                document.getElementById('strikeC').value = 110;
+                document.getElementById('premiumA').value = 5.0;
+                document.getElementById('premiumB').value = 2.0;
+                document.getElementById('premiumC').value = 0.5;
+            } else if (strategy === 'bwb') {
+                document.getElementById('strikeA').value = 90;
+                document.getElementById('strikeB').value = 100;
+                document.getElementById('strikeC').value = 115;
+                document.getElementById('premiumA').value = 5.0;
+                document.getElementById('premiumB').value = 2.0;
+                document.getElementById('premiumC').value = 0.1;
+            } else if (strategy === 'covered_call') {
+                document.getElementById('strikeA').value = 95;
+                document.getElementById('strikeB').value = 105;
+                document.getElementById('premiumB').value = 3.0;
+            }
+            
+            drawChart();
+        });
+
+        document.getElementById('strikeA').addEventListener('input', drawChart);
+        document.getElementById('strikeB').addEventListener('input', drawChart);
+        document.getElementById('strikeC').addEventListener('input', drawChart);
+        document.getElementById('premiumA').addEventListener('input', drawChart);
+        document.getElementById('premiumB').addEventListener('input', drawChart);
+        document.getElementById('premiumC').addEventListener('input', drawChart);
+
+        drawChart();
+    </script>
+</body>
+</html>

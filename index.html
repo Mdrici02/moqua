@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammed | Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Market Pulse Carousel -->
+    <div class="carousel-wrap">
+        <div id="status" class="carousel-status">Loading Market Pulse...</div>
+        <div class="carousel-content" id="newsCarousel">
+            <!-- Active news item will be injected here -->
+        </div>
+        <div class="carousel-dots" id="newsDots">
+            <!-- Dots will be injected here -->
+        </div>
+    </div>
+
+    <!-- Background Animated Gradients -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="scrolled" style="top: 60px;">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Moqua<span class="logo-author">by Mohammed Drici</span></a>
+            <ul class="nav-links">
+                <li><a href="pricer.html">Download Pricer</a></li>
+                <li><a href="download.html">Python Package</a></li>
+                <li><a href="white_paper.html">White Paper</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" style="min-height: 80vh; padding-top: 150px;">
+        <div class="section-container hero-content">
+            <div class="badge">Version 0.3.0 | Beta</div>
+            <h1 class="hero-title">Quantitative <span>Strategy Engine</span></h1>
+            <p class="hero-subtitle">Moqua is a high-performance quantitative finance library. It bridges the gap between Python's flexibility and C++'s raw execution speed, offering institutional-grade options pricing, statistical arbitrage analytics, and optimization tools.</p>
+            
+            <div class="hero-cta" style="margin-top: 40px;">
+                <a href="download.html" class="btn btn-primary">Get Started</a>
+                <a href="library.html" class="btn btn-outline">Explore API</a>
+            </div>
+            
+            <div class="skills" style="justify-content: center; margin-top: 50px;">
+                <span class="skill-tag"><i class="fa-brands fa-python"></i> Python API</span>
+                <span class="skill-tag">C++ Core</span>
+                <span class="skill-tag">Options Pricing</span>
+                <span class="skill-tag">Statistical Arbitrage</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Mohammed. Built with passion.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

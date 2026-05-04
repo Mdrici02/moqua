@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Insight | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f4f5f7;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(15,23,42,0.1);
+        }
+        .insight-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .indices-row {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .macro-row {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .widget-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .widget-title {
+            font-size: 1.1rem;
+            color: var(--accent-1);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .index-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .index-change.positive { color: #10b981; }
+        .index-change.negative { color: #f43f5e; }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table th { color: var(--text-secondary); font-size: 0.85rem; }
+        .macro-value { font-size: 1.8rem; font-weight: bold; margin-top: 10px; }
+        .macro-date { font-size: 0.8rem; color: var(--text-secondary); }
+        .loading-spinner { color: var(--accent-1); text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="scrolled">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Moqua<span class="logo-author">by Mohammed Drici</span></a>
+            <ul class="nav-links">
+                <li><a href="pricer.html">Download Pricer</a></li>
+                <li><a href="download.html">Python Package</a></li>
+                <li><a href="white_paper.html">White Paper</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div style="margin-top: 100px;"></div>
+
+    <div class="insight-grid">
+        
+        <!-- Indices Row -->
+        <div class="indices-row">
+            <div class="widget-card" id="widget-spy">
+                <div class="widget-title"><i class="fa-solid fa-chart-line"></i> S&P 500 (SPY)</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+            <div class="widget-card" id="widget-qqq">
+                <div class="widget-title"><i class="fa-solid fa-chart-line"></i> Nasdaq 100 (QQQ)</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+            <div class="widget-card" id="widget-dia">
+                <div class="widget-title"><i class="fa-solid fa-chart-line"></i> Dow Jones (DIA)</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+        </div>
+
+        <!-- Movers & Earnings -->
+        <div class="widget-card">
+            <div class="widget-title"><i class="fa-solid fa-bolt"></i> Tech Movers (Live)</div>
+            <div id="movers-content"><div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div></div>
+        </div>
+
+        <div class="widget-card">
+            <div class="widget-title"><i class="fa-solid fa-calendar-days"></i> Upcoming Earnings</div>
+            <div id="earnings-content"><div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div></div>
+        </div>
+
+        <!-- Macro Row -->
+        <div class="macro-row">
+            <div class="widget-card" id="widget-cpi">
+                <div class="widget-title"><i class="fa-solid fa-money-bill-trend-up"></i> US Inflation (CPI)</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+            <div class="widget-card" id="widget-fed">
+                <div class="widget-title"><i class="fa-solid fa-building-columns"></i> Fed Funds Rate</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+            <div class="widget-card" id="widget-10y">
+                <div class="widget-title"><i class="fa-solid fa-file-invoice-dollar"></i> 10-Year Treasury</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+            <div class="widget-card" id="widget-unrate">
+                <div class="widget-title"><i class="fa-solid fa-users"></i> Unemployment Rate</div>
+                <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="market_insight.js"></script>
+</body>
+</html>
