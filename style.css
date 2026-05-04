@@ -149,10 +149,11 @@ nav.scrolled {
 .nav-content {
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 50px 0 30px;
 }
 .logo {
     font-family: var(--font-heading);
@@ -167,7 +168,7 @@ nav.scrolled {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 45px;
 }
 .nav-links a {
     color: var(--text-primary);
