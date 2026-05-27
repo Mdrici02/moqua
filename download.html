@@ -148,6 +148,7 @@
         <div class="page-header">
             <h1>Python Package</h1>
             <p>Install the moqua quantitative finance library and start pricing in seconds.</p>
+            <p style="margin-top:10px;"><span style="background: var(--accent-gradient); color:white; font-size:0.8rem; font-weight:600; padding:4px 14px; border-radius:20px;">v0.3.2</span></p>
         </div>
 
         <!-- Installation -->
@@ -166,7 +167,7 @@
 
         <!-- Quick Start -->
         <div class="install-box">
-            <h2><i class="fa-solid fa-laptop-code"></i> Quick Start</h2>
+            <h2><i class="fa-solid fa-laptop-code"></i> Quick Start — Options Pricing</h2>
             <p style="margin-bottom: 20px; color: var(--text-secondary);">Pricing a European Call using the Black-Scholes engine.</p>
             <div class="code-block">import moqua as mq
 
@@ -184,6 +185,35 @@ print(f"Delta : {calc.delta:.4f}")
 print(f"Gamma : {calc.gamma:.4f}")
 print(f"Vega  : {calc.vega:.4f}")
 print(f"Theta : {calc.theta:.4f}")</div>
+        </div>
+
+        <!-- Quick Start SABR -->
+        <div class="install-box">
+            <h2><i class="fa-solid fa-chart-line"></i> Quick Start — SABR Volatility Smile</h2>
+            <p style="margin-bottom: 20px; color: var(--text-secondary);">Calibrating a SABR model and extracting the volatility smile from market prices.</p>
+            <div class="code-block">import moqua as mq
+
+# Market data: strikes and observed call prices
+strikes = [80, 90, 100, 110, 120]
+prices  = [23.01, 14.59, 7.97, 4.67, 3.38]
+
+# SABRModel auto-calibrates on instantiation
+# Accepts market_prices directly (converts to implied vols internally)
+sabr = mq.SABRModel(
+    strikes=strikes,
+    F=100.0,          # Forward price
+    T=1.0,            # Maturity in years
+    market_prices=prices,
+    option_types=[1.0] * 5  # 1.0 = Call
+)
+
+print(f"Alpha : {sabr.alpha:.4f}")
+print(f"Rho   : {sabr.rho:.4f}")
+print(f"Nu    : {sabr.nu:.4f}")
+
+# Get SABR implied vol for any strike
+vol = sabr.get_volatility(F=100.0, K=105.0, T=1.0)
+print(f"SABR vol at K=105 : {vol*100:.2f}%")</div>
         </div>
 
         <!-- API Dictionary -->
@@ -230,15 +260,23 @@ print(f"Theta : {calc.theta:.4f}")</div>
                 </table>
             </div>
 
+            <!-- Models -->
+            <div class="api-group">
+                <div class="api-group-header">Stochastic Models</div>
+                <table class="api-table">
+                    <tr><th>Class</th><th>Description</th></tr>
+                    <tr><td>SABRModel(strikes, F, T, market_prices, option_types, beta)</td><td>Auto-calibrates the SABR model (Hagan 2002). Accepts raw market prices or implied vols. Exposes <code>.alpha</code>, <code>.rho</code>, <code>.nu</code> and <code>.get_volatility(F, K, T)</code>.</td></tr>
+                    <tr><td>HestonModel(strikes, market_prices, S0, T, r)</td><td>Auto-calibrates the Heston stochastic volatility model using a hybrid Differential Evolution + Levenberg-Marquardt approach. Exposes <code>.v0</code>, <code>.kappa</code>, <code>.theta</code>, <code>.sigma</code>, <code>.rho</code> and <code>.get_price(S0, K, T, r)</code>.</td></tr>
+                </table>
+            </div>
+
             <!-- Optimization -->
             <div class="api-group">
                 <div class="api-group-header">Calibration & Optimization</div>
                 <table class="api-table">
                     <tr><th>Function</th><th>Description</th></tr>
-                    <tr><td>levenberg_marquardt(...)</td><td>Levenberg-Marquardt non-linear least squares calibration.</td></tr>
-                    <tr><td>differential_evolution(...)</td><td>Global optimizer for non-convex calibration problems.</td></tr>
-                    <tr><td>calibrate_heston_hybrid(...)</td><td>Heston stochastic volatility model calibration (hybrid approach).</td></tr>
-                    <tr><td>implied_volatility(price, S, K, T, r, type)</td><td>Newton-Raphson implied volatility inversion.</td></tr>
+                    <tr><td>differential_evolution(func, bounds, args, pop_size, max_iter)</td><td>Global optimizer for non-convex calibration problems (e.g. Heston).</td></tr>
+                    <tr><td>implied_volatility(price, F, K, T, option_type)</td><td>Implied volatility inversion using Peter Jäckel's algorithm (via C++ core). Fast and numerically stable.</td></tr>
                 </table>
             </div>
 
