@@ -3,120 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | moqua</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Contact | Moqua</title>
+    <meta name="description" content="Get in touch with Mohammed Drici about Moqua, quantitative finance, or collaboration opportunities.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .page-content {
-            padding: 110px 20px 80px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .contact-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .contact-header h1 {
-            font-size: 3rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 14px;
-        }
-        .contact-header p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 520px;
-            margin: 0 auto;
-        }
-        /* --- Form --- */
-        .contact-form {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-        .form-group {
-            margin-bottom: 24px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-family: var(--font-heading);
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            color: var(--text-primary);
-            background: #f8fafc;
-            transition: var(--transition);
-            outline: none;
-            box-sizing: border-box;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--accent-1);
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(15,23,42,0.08);
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 140px;
-        }
-        .form-submit {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-family: var(--font-heading);
-            font-size: 1.05rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 8px;
-        }
-        .form-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(15,23,42,0.25);
-        }
-        .form-success {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 10px;
-            color: #15803d;
-            font-weight: 600;
-            margin-top: 16px;
-        }
-        /* --- Socials --- */
-        .social-section {
-            text-align: center;
-            margin-top: 48px;
-        }
-        .social-section p {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
-    </style>
 </head>
 <body>
+
+    <!-- Market Pulse Ticker -->
+    <div class="carousel-wrap">
+        <div id="status" class="carousel-status">Loading Market Pulse...</div>
+        <div class="carousel-content" id="newsCarousel"></div>
+        <div class="carousel-dots" id="newsDots"></div>
+    </div>
 
     <!-- Navigation -->
     <nav id="navbar" class="scrolled">
@@ -131,34 +33,29 @@
         </div>
     </nav>
 
-    <div class="page-content">
+    <div class="page-content" style="max-width: 680px;">
 
-        <div class="contact-header">
+        <div class="page-header">
+            <div class="section-label" style="justify-content:center;">Get in Touch</div>
             <h1>Let's Connect</h1>
-            <p>Open to new opportunities, collaborations, or just a chat about quantitative finance. I'll get back to you.</p>
+            <p>Open to collaborations, opportunities, or a chat about quantitative finance.</p>
         </div>
 
-        <div style="text-align:center; margin-bottom: 48px;">
-            <p style="color:var(--text-secondary); margin-bottom: 20px; font-size:1rem;">
-                Reach me directly at
-            </p>
+        <!-- Email CTA -->
+        <div class="install-box reveal" style="text-align:center; padding: 44px;">
+            <div style="font-size: 2.5rem; margin-bottom: 16px;">✉️</div>
+            <p style="color: var(--gray-500); margin-bottom: 16px; font-size: 0.95rem;">Reach me directly at</p>
             <a href="mailto:mohammed.drici02@gmail.com"
-               style="font-size:1.4rem; font-weight:700; font-family:var(--font-heading);
-                      color:var(--accent-1); text-decoration:none; letter-spacing:0.5px;
-                      border-bottom: 2px solid var(--accent-1); padding-bottom: 2px;
-                      transition: var(--transition);"
-               onmouseover="this.style.opacity='0.7'"
-               onmouseout="this.style.opacity='1'">
+               style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600;
+                      color: var(--accent); text-decoration: none; border-bottom: 1.5px solid var(--accent); padding-bottom: 2px;">
                 mohammed.drici02@gmail.com
             </a>
-            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:12px;">
-                Click to open your mail app, or copy and paste in any email client.
-            </p>
+            <p style="color: var(--gray-400); font-size: 0.82rem; margin-top: 10px;">Click to open your mail client.</p>
         </div>
 
         <!-- Social Links -->
-        <div class="social-section">
-            <p>Or find me here</p>
+        <div class="reveal reveal-delay-1" style="text-align:center; margin-top: 36px;">
+            <p style="color: var(--gray-400); margin-bottom: 20px; font-size: 0.9rem; font-family: var(--font-mono); letter-spacing: 1px; text-transform: uppercase;">Or find me here</p>
             <div class="social-links">
                 <a href="https://github.com/Mdrici02" target="_blank" rel="noopener" title="GitHub">
                     <i class="fa-brands fa-github"></i>
@@ -166,25 +63,29 @@
                 <a href="https://www.linkedin.com/in/mohammed-drici-2374a5241/" target="_blank" rel="noopener" title="LinkedIn">
                     <i class="fa-brands fa-linkedin"></i>
                 </a>
-                <span id="phoneToggle" onclick="togglePhone()" title="Show phone number" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:var(--bg-surface);color:var(--text-primary);font-size:1.5rem;text-decoration:none;transition:var(--transition);border:1px solid #e2e8f0;">
+                <a href="javascript:void(0)" onclick="togglePhone()" title="Show phone" id="phoneToggle">
                     <i class="fa-solid fa-phone"></i>
-                </span>
+                </a>
             </div>
-            <!-- Phone number reveal on click -->
-            <div id="phoneReveal" style="display:none;margin-top:16px;">
-                <a href="tel:+33768690683" style="font-size:1.2rem;font-weight:700;color:var(--accent-1);text-decoration:none;font-family:var(--font-heading);letter-spacing:1px;">
-                    <i class="fa-solid fa-phone" style="margin-right:8px;"></i>+33 7 68 69 06 83
+            <div id="phoneReveal" style="display:none; margin-top:20px;">
+                <a href="tel:+33768690683"
+                   style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--gray-900); text-decoration:none;">
+                    <i class="fa-solid fa-phone" style="margin-right:8px; color: var(--accent);"></i>+33 7 68 69 06 83
                 </a>
             </div>
         </div>
     </div>
 
+    <footer>
+        <p>© 2025 Mohammed Drici · Moqua Quantitative Finance</p>
+    </footer>
+
     <script>
         function togglePhone() {
-            const reveal = document.getElementById('phoneReveal');
-            reveal.style.display = reveal.style.display === 'none' ? 'block' : 'none';
+            const r = document.getElementById('phoneReveal');
+            r.style.display = r.style.display === 'none' ? 'block' : 'none';
         }
     </script>
-
+    <script src="app.js"></script>
 </body>
 </html>

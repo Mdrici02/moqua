@@ -3,33 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohammed | Portfolio</title>
-    <!-- Google Fonts -->
+    <title>Moqua — Quantitative Strategy Engine</title>
+    <meta name="description" content="Moqua is a high-performance quantitative finance library. Institutional-grade options pricing, SABR calibration and statistical arbitrage — powered by a C++ core.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Market Pulse Carousel -->
+
+    <!-- Market Pulse Ticker -->
     <div class="carousel-wrap">
         <div id="status" class="carousel-status">Loading Market Pulse...</div>
-        <div class="carousel-content" id="newsCarousel">
-            <!-- Active news item will be injected here -->
-        </div>
-        <div class="carousel-dots" id="newsDots">
-            <!-- Dots will be injected here -->
-        </div>
+        <div class="carousel-content" id="newsCarousel"></div>
+        <div class="carousel-dots" id="newsDots"></div>
     </div>
 
-    <!-- Background Animated Gradients -->
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-
     <!-- Navigation -->
-    <nav id="navbar" class="scrolled" style="top: 60px;">
+    <nav id="navbar">
         <div class="nav-content">
             <a href="index.html" class="logo">Moqua<span class="logo-author">by Mohammed Drici</span></a>
             <ul class="nav-links">
@@ -41,27 +33,175 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" style="min-height: 80vh; padding-top: 150px;">
-        <div class="section-container hero-content">
-            <div class="badge">Version 0.3.0 | Beta</div>
-            <h1 class="hero-title">Quantitative <span>Strategy Engine</span></h1>
-            <p class="hero-subtitle">Moqua is a high-performance quantitative finance library. It bridges the gap between Python's flexibility and C++'s raw execution speed, offering institutional-grade options pricing, statistical arbitrage analytics, and optimization tools.</p>
-            
-            <div class="hero-cta" style="margin-top: 40px;">
-                <a href="download.html" class="btn btn-primary">Get Started</a>
-                <a href="library.html" class="btn btn-outline">Explore API</a>
+    <!-- HERO -->
+    <section class="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                v0.3.2 · Now with SABR Calibration
             </div>
-            
-            <div class="skills" style="justify-content: center; margin-top: 50px;">
+
+            <h1 class="hero-title">
+                Quantitative<br>
+                <span class="grad">Strategy Engine</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                High-performance options pricing, volatility surface calibration,
+                and statistical arbitrage analytics — powered by a native C++ core.
+            </p>
+
+            <div class="hero-cta">
+                <a href="download.html" class="btn btn-primary btn-large">
+                    <i class="fa-brands fa-python"></i> Get Started
+                </a>
+                <a href="library.html" class="btn btn-outline btn-large">
+                    Explore API <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="skills">
                 <span class="skill-tag"><i class="fa-brands fa-python"></i> Python API</span>
                 <span class="skill-tag">C++ Core</span>
-                <span class="skill-tag">Options Pricing</span>
+                <span class="skill-tag">Black-Scholes · Black-76 · Bachelier</span>
+                <span class="skill-tag">SABR · Heston</span>
                 <span class="skill-tag">Statistical Arbitrage</span>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Engines</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Stochastic Models</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-value">C++</div>
+                    <div class="stat-label">Core Engine</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-value">0.3.2</div>
+                    <div class="stat-label">Latest Release</div>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- WHAT'S IN MOQUA -->
+    <section style="background: var(--white); padding: 100px 20px;">
+        <div class="section-container">
+            <div style="text-align: center; margin-bottom: 64px;">
+                <div class="section-label reveal">Library</div>
+                <h2 class="section-title reveal">Everything you need to price,<br>calibrate &amp; analyse</h2>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>C++ Powered Core</h3>
+                    <p>Critical computations run in native C++ via pybind11 bindings — microsecond-level pricing latency from Python.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📐</div>
+                    <h3>4 Pricing Engines</h3>
+                    <p>Black-Scholes, Black-Scholes-Merton (dividends), Black-76 (futures/rates), and Bachelier (normal model for negative rates).</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌊</div>
+                    <h3>SABR Calibration</h3>
+                    <p>Fit a SABR volatility smile to market prices in one line. Auto-converts prices to implied vols via Jäckel's algorithm.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏔</div>
+                    <h3>Heston Model</h3>
+                    <p>Full stochastic volatility calibration using a Differential Evolution + Levenberg-Marquardt hybrid optimiser.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Statistical Arbitrage</h3>
+                    <p>Cointegration tests (Engle-Granger, Johansen), Kalman filter dynamic beta, ADF/KPSS, and rolling Z-Score.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖥</div>
+                    <h3>Desktop Pricer</h3>
+                    <p>Standalone Windows app built on top of moqua — no Python required. Multi-leg portfolio builder with Greeks and vol surface.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK CODE EXAMPLE -->
+    <section style="padding: 100px 20px; background: var(--off-white);">
+        <div class="section-container">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
+                <div class="reveal">
+                    <div class="section-label">Quick Start</div>
+                    <h2 class="section-title">Start pricing in<br>3 lines of code</h2>
+                    <p style="color: var(--gray-600); margin-bottom: 28px; line-height:1.7;">
+                        Install via pip, instantiate an engine and get a full Greeks calculator in seconds.
+                        No configuration, no boilerplate.
+                    </p>
+                    <a href="download.html" class="btn btn-primary">
+                        Full Documentation <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="reveal reveal-delay-1">
+                    <div class="code-window">
+                        <div class="code-window-bar">
+                            <span class="code-dot red"></span>
+                            <span class="code-dot amber"></span>
+                            <span class="code-dot green"></span>
+                            <span class="code-tab">moqua_example.py</span>
+                        </div>
+                        <div class="code-body"><span class="code-kw">import</span> moqua <span class="code-kw">as</span> mq
+
+engine = mq.<span class="code-fn">BlackScholesEngine</span>()
+pricer = mq.<span class="code-fn">EuropeanOptionPricer</span>(engine)
+
+calc = pricer.<span class="code-fn">get_calculator</span>(
+    spot=<span class="code-num">100.0</span>, K=<span class="code-num">100.0</span>, T=<span class="code-num">1.0</span>,
+    r=<span class="code-num">0.05</span>, sigma=<span class="code-num">0.20</span>,
+    option_type=<span class="code-str">"call"</span>
+)
+
+<span class="code-fn">print</span>(<span class="code-str">f"Price : {calc.price:.4f}"</span>)
+<span class="code-fn">print</span>(<span class="code-str">f"Delta : {calc.delta:.4f}"</span>)
+<span class="code-fn">print</span>(<span class="code-str">f"Vega  : {calc.vega:.4f}"</span>)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BOTTOM -->
+    <section style="padding: 100px 20px; background: var(--gray-900); text-align: center;">
+        <div class="section-container">
+            <h2 class="reveal" style="font-family: var(--font-head); font-size: clamp(2rem,4vw,3.5rem); font-weight:900; color:#fff; letter-spacing:-1px; margin-bottom:16px;">
+                Ready to trade smarter?
+            </h2>
+            <p class="reveal reveal-delay-1" style="color: var(--gray-400); font-size:1.1rem; margin-bottom:40px;">
+                Install the Python package or download the desktop app for free.
+            </p>
+            <div class="hero-cta reveal reveal-delay-2">
+                <a href="download.html" class="btn btn-primary btn-large" style="background:#fff; color:var(--gray-900);">
+                    <i class="fa-brands fa-python"></i> pip install moqua
+                </a>
+                <a href="pricer.html" class="btn btn-outline btn-large" style="border-color: rgba(255,255,255,0.25); color:#fff;">
+                    <i class="fa-solid fa-download"></i> Desktop App
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Mohammed Drici · Moqua Quantitative Finance</p>
+    </footer>
 
     <script src="app.js"></script>
 </body>
